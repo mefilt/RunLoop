@@ -26,14 +26,14 @@
     return self;
 }
 
-
+    static BOOL shouldKeepRunning = YES;        // global
 - (void) run
 {
     NSLog(@"Run main");
     [self performSelector:@selector(mainTest) withObject:nil afterDelay:1];
     _timer = [NSTimer timerWithTimeInterval:2 target:self selector:@selector(timerMain) userInfo:nil repeats:true];
     [[NSRunLoop currentRunLoop]addTimer:_timer forMode:NSDefaultRunLoopMode];
-    BOOL shouldKeepRunning = YES;        // global
+
     NSRunLoop *theRL = [NSRunLoop currentRunLoop];
     while (shouldKeepRunning && [theRL runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]]);
     
@@ -57,10 +57,11 @@
 {
     NSLog(@"main perfom");
     [self performSelector:@selector(mainTest1) withObject:nil afterDelay:1];
-    CFRunLoopRunInMode((CFStringRef)NSDefaultRunLoopMode, MAXFLOAT, NO);
+//    CFRunLoopRunInMode((CFStringRef)NSDefaultRunLoopMode, MAXFLOAT, NO);
+    [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]];
     CFRunLoopRef runLoop = [[NSRunLoop currentRunLoop] getCFRunLoop];
     NSLog(@"%p",runLoop);
-
+    shouldKeepRunning = false;
 }
 - (void) mainTest1
 {
